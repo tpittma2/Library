@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>RThe Library</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <!-- <link rel="stylesheet" href="Styles/reset.css"> -->
+    <link rel="stylesheet" href="Styles/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>The Library</h1>
+    </header>
+    <main>
+        <form class="add-form">
+            <label for="title">Title: <input type="text" name="title" id="title"></label>           
+            <label for="author">Author: <input type="text" name="author" id="author">  </label>
+              
+            <label for="page-count"># of Pages: <input type="number" name="page-count" id="page-count"></label>
+            
+            <label for="was-read">Read: <input type="checkbox" name="was-read" id="was-read"></label>
+            
+            <button type="button" class="add">Submit</button>
+        </form>
+        <div class=main-container>
+            <table class="table">
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th># of Pages</th>
+                    <th>Read</th>
+                    <th></th>
+                </tr>
+            </table>
+        </div>
+    </main>
+    <footer>
+
+    </footer>
+    <script src="Scripts/library.js"></script>
+</body>
+
+</html>
