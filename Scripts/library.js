@@ -1,4 +1,4 @@
-let myLibrary = [];
+
 
 
 const addBookTitle = document.getElementById('title');
@@ -11,6 +11,32 @@ const btnAdd = document.querySelector('.add');
 
 const READ_TEXT = 'Read';
 const UNREAD_TEXT = 'Unread';
+
+
+
+
+let myLibrary = JSON.parse(localStorage.getItem('library') || '[]');
+if (myLibrary === null || myLibrary.length === 0) {
+    myLibrary = [];
+    let firstBook = new Book();
+    firstBook.id = getNewId();
+    firstBook.title = "A Song of Ice and Fire";
+    firstBook.author = 'George R.R. Martin';
+    firstBook.numberOfPages = 694;
+    firstBook.wasRead = true;
+    myLibrary.push(firstBook);
+    saveLibrary();
+
+}
+
+for (let i = 0; i < myLibrary.length; i++) {
+    addBookToTable(myLibrary[i]);
+}
+
+
+function saveLibrary() {
+    localStorage.setItem('library', JSON.stringify(myLibrary));
+}
 
 
 function Book() {
@@ -50,27 +76,33 @@ function addBookToLibrary() {
     myLibrary.push(book);
     addBookToTable(book);
     clearAddBookFields();
+    saveLibrary();
 
 
 }
 
 function deleteBook(bookID) {
+
+    
+    let bookIdx = myLibrary.findIndex(x => x.id == bookID);
+    if(!confirm(`Are you sure you want to delete '${myLibrary[bookIdx].title}'?`))
+    return;
+    if (bookIdx > -1)
+        myLibrary.splice(bookIdx, 1);
     let datarows = bookTable.querySelectorAll('tr');
-    for(let i = 0; i < datarows.length; i++)
-    {
-        if(datarows[i].dataset.id == bookID) {
+    for (let i = 0; i < datarows.length; i++) {
+        if (datarows[i].dataset.id == bookID) {
             bookTable.removeChild(datarows[i]);
             break;
         }
     }
 
-    let bookIdx = myLibrary.indexOf(x=> x.id == bookID);
-    if(bookIdx > -1)
-        myLibrary.slice(bookIdx, 1);
+    
+
+    saveLibrary();
 }
 
-function toggleRead(id)
-{
+function toggleRead(id) {
     let book = getBookByID(id);
     book.wasRead = !book.wasRead;
     let row = getRowByID(id);
@@ -80,20 +112,19 @@ function toggleRead(id)
 
     let editButton = row.querySelector('.toggle-read');
     setReadToggleButtonText(editButton, book.wasRead);
+
+    saveLibrary();
 }
 
-function getBookByID(id)
-{
-    return myLibrary.find(book=> book.id == id);
+function getBookByID(id) {
+    return myLibrary.find(book => book.id == id);
 }
 
-function getRowByID(id)
-{
-    return Array.from( bookTable.querySelectorAll('tr')).find(row => row.dataset.id == id);
+function getRowByID(id) {
+    return Array.from(bookTable.querySelectorAll('tr')).find(row => row.dataset.id == id);
 }
 
-function setReadToggleButtonText(button,  wasRead)
-{
+function setReadToggleButtonText(button, wasRead) {
     button.textContent = wasRead ? 'Mark Unread' : 'Mark Read';
 }
 
@@ -120,8 +151,7 @@ function addBookToTable(book) {
     setReadToggleButtonText(readToggleButton, book.wasRead);
     readToggleButton.dataset.id = book.id;
     readToggleButton.classList.add('toggle-read');
-    readToggleButton.addEventListener('click', (e) => 
-    {
+    readToggleButton.addEventListener('click', (e) => {
         toggleRead(e.target.dataset.id)
     });
     rowToggleRead.appendChild(readToggleButton);
@@ -130,8 +160,7 @@ function addBookToTable(book) {
     deleteButton.textContent = 'Delete'
     deleteButton.dataset.id = book.id;
     deleteButton.classList.add('delete');
-    deleteButton.addEventListener('click', (e) => 
-    {
+    deleteButton.addEventListener('click', (e) => {
         deleteBook(e.target.dataset.id)
     });
     rowDelete.appendChild(deleteButton);
@@ -147,19 +176,37 @@ function addBookToTable(book) {
 }
 
 
+function storageAvailable(type) {
+    var storage;
+    try {
+        storage = window[type];
+        var x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch (e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            (storage && storage.length !== 0);
+    }
+}
+
+
 
 
 
 btnAdd.addEventListener('click', addBookToLibrary);
 
 
-let firstBook = new Book();
-firstBook.id = getNewId();
-firstBook.title = "A Song of Ice and Fire";
-firstBook.author = 'George R.R. Martin';
-firstBook.numberOfPages = 694;
-firstBook.wasRead = true;
-myLibrary.push(firstBook);
-addBookToTable(firstBook);
 
-console.log(getNewId());
+
