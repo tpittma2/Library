@@ -12,7 +12,20 @@ const btnAdd = document.querySelector('.add');
 const READ_TEXT = 'Read';
 const UNREAD_TEXT = 'Unread';
 
+class Book {
+    constructor(){
+        this.id;
+        this.title;
+        this.author;
+        this.numberOfPages;
+        this.wasRead = false;
+    }
 
+    get info() {
+        return `${this.title} by ${this.author}, ${this.numberOfPages} pages, ${this.wasRead ? 'was read' : 'not yet read'}`;
+    }
+    
+}
 
 
 let myLibrary = JSON.parse(localStorage.getItem('library') || '[]');
@@ -39,16 +52,8 @@ function saveLibrary() {
 }
 
 
-function Book() {
-    this.id;
-    this.title;
-    this.author;
-    this.numberOfPages;
-    this.wasRead = false;
-}
-Book.prototype.info = function () {
-    return `${this.title} by ${this.author}, ${this.numberOfPages} pages, ${this.wasRead ? 'was read' : 'not yet read'}`;
-}
+
+
 
 function getNewId() {
     if (myLibrary.length == 0)
