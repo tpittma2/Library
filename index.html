@@ -15,14 +15,18 @@
     </header>
     <main>
         <form class="add-form">
-            <label for="title">Title: <input type="text" name="title" id="title"></label>           
-            <label for="author">Author: <input type="text" name="author" id="author">  </label>
+            <label for="title">Title: <input type="text" required name="title" id="title"></label>           
+            <label for="author">Author: <input type="text" required name="author" id="author">  </label>
               
-            <label for="page-count"># of Pages: <input type="number" name="page-count" id="page-count"></label>
+            <label for="page-count"># of Pages: <input type="number" required name="page-count" id="page-count"></label>
             
             <label for="was-read">Read: <input type="checkbox" name="was-read" id="was-read"></label>
             
-            <button type="button" class="add">Submit</button>
+            <div>
+                <span class="add-error" aria-live="polite"></span>
+                <button type="button" class="add">Submit</button>
+            </div>
+            
         </form>
         <div class=main-container>
             <table class="table">
