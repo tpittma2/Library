@@ -1,19 +1,21 @@
 
 
-
+const form = document.getElementsByTagName('form')[0];
 const addBookTitle = document.getElementById('title');
 const addBookAuthor = document.getElementById('author');
 const addBookPageCount = document.getElementById('page-count');
 const addBookWasRead = document.getElementById('was-read');
+const addBookError = document.querySelector('span.add-error');
 
 const bookTable = document.querySelector('.table');
 const btnAdd = document.querySelector('.add');
 
 const READ_TEXT = 'Read';
 const UNREAD_TEXT = 'Unread';
+const INPUT_ERROR_CLASS = 'add-error';
 
 class Book {
-    constructor(){
+    constructor() {
         this.id;
         this.title;
         this.author;
@@ -24,7 +26,7 @@ class Book {
     get info() {
         return `${this.title} by ${this.author}, ${this.numberOfPages} pages, ${this.wasRead ? 'was read' : 'not yet read'}`;
     }
-    
+
 }
 
 
@@ -43,7 +45,7 @@ if (myLibrary === null || myLibrary.length === 0) {
 }
 
 for (let i = 0; i < myLibrary.length; i++) {
-    addBookToTable(myLibrary[i]);
+    if(myLibrary[i].id != null) addBookToTable(myLibrary[i]);
 }
 
 
@@ -72,6 +74,11 @@ function clearAddBookFields() {
 
 function addBookToLibrary() {
 
+    if(!form.checkValidity()) {
+        showError();
+        return;
+    }
+       
     let book = new Book();
     book.id = getNewId();
     book.title = addBookTitle.value;
@@ -86,14 +93,20 @@ function addBookToLibrary() {
 
 }
 
+function showError() {
+    if(!form.checkValidity())
+        form.reportValidity();
+
+
+}
+
 function deleteBook(bookID) {
 
-    
+
     let bookIdx = myLibrary.findIndex(x => x.id == bookID);
-    if(!confirm(`Are you sure you want to delete '${myLibrary[bookIdx].title}'?`))
-    return;
-    if (bookIdx > -1)
-        myLibrary.splice(bookIdx, 1);
+    if (myLibrary[bookIdx].title != null && !confirm(`Are you sure you want to delete '${myLibrary[bookIdx].title}'?`))
+        return;
+    if (bookIdx > -1) myLibrary.splice(bookIdx, 1);
     let datarows = bookTable.querySelectorAll('tr');
     for (let i = 0; i < datarows.length; i++) {
         if (datarows[i].dataset.id == bookID) {
@@ -101,11 +114,10 @@ function deleteBook(bookID) {
             break;
         }
     }
-
-    
-
     saveLibrary();
 }
+
+
 
 function toggleRead(id) {
     let book = getBookByID(id);
